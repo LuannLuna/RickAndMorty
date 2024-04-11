@@ -2,7 +2,7 @@
 //  RickAndMortyUITestsLaunchTests.swift
 //  RickAndMortyUITests
 //
-//  Created by Luann Marques Luna on 10/04/24.
+//  Created by Luann Marques Luna on 11/04/24.
 //
 
 import XCTest
