@@ -1,3 +1,4 @@
+
 query GetAllCaracters {
   characters {
     info {
