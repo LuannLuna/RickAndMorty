@@ -1,0 +1,22 @@
+query GetAllCaracters {
+  characters {
+    info {
+        next
+      }
+    results {
+      id
+      name
+      status
+      type
+      gender
+      origin {
+        name
+        dimension
+      }
+      location {
+        name
+      }
+      image
+    }
+  }
+}
