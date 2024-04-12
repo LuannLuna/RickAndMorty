@@ -1,23 +1,53 @@
 
-query GetAllCaracters {
-  characters {
+query FetchAllCharacters($page:Int!) {
+  characters(page: $page) {
     info {
-        next
-      }
+       ...PageInfo
+    }
+    
     results {
+      ...CharacterInfo
+    }
+  }
+}
+
+query FetchCharacter($id: ID!) {
+  character(id: $id) {
+         name
+    status
+    species
+    type
+    gender
+    origin {
+      name
+      dimension
+      type
+    }
+    location {
+      name
+      dimension
+      type
+    }
+    image
+    episode {
       id
       name
-      status
-      type
-      gender
-      origin {
-        name
-        dimension
+      air_date
+      episode
+      characters {
+        ...CharacterInfo
       }
-      location {
-        name
-      }
-      image
+    }
+  }
+}
+
+query FindCharacter($filter: FilterCharacter!) {
+  characters(filter: $filter) {
+    info {
+      ...PageInfo
+    }
+    results {
+      ...CharacterInfo
     }
   }
 }

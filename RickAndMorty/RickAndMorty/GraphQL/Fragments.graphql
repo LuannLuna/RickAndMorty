@@ -1,0 +1,22 @@
+fragment PageInfo on Info {
+    next
+    pages
+    count
+    prev
+}
+
+fragment CharacterInfo on Character {
+  id
+  name
+  status
+  type
+  gender
+  origin {
+    name
+    dimension
+  }
+  location {
+    name
+  }
+  image
+}
