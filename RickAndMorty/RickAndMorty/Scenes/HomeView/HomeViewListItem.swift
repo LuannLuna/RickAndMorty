@@ -10,7 +10,6 @@ import SwiftUI
 struct HomeViewListItem: View {
     let character: CharacterViewModel
     
-    
     var body: some View {
         VStack {
             HStack(alignment: .top, spacing: 10) {
@@ -23,6 +22,8 @@ struct HomeViewListItem: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)
+                                .clipShape(Circle())
+                                .overlay(Circle().stroke(Color.gray, lineWidth: 2))
                         case .failure:
                             Image(systemName: "person.fill")
                                 .resizable()
@@ -41,23 +42,7 @@ struct HomeViewListItem: View {
                     Text(character.name)
                         .font(.title3)
                         .fontWeight(.semibold)
-                    HStack(alignment: .top, spacing: 10) {
-                        Text("Status:")
-                            .font(.headline)
-                        Text(character.status.rawValue.capitalized)
-                            .font(.subheadline)
-                        switch character.status {
-                        case .alive:
-                            Text("💓")
-                                .font(.subheadline)
-                        case .dead:
-                            Text("💀")
-                                .font(.subheadline)
-                        case .unknown:
-                            Text("⁇")
-                                .font(.subheadline)
-                        }
-                    }
+                    StatusInlineComponent(status: character.status)
                     HStack(alignment: .top, spacing: 10) {
                         Text("Origin:")
                             .font(.headline)

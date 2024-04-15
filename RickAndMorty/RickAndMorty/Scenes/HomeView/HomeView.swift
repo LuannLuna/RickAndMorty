@@ -16,7 +16,7 @@ struct HomeView: View {
             VStack {
                 List(viewModel.characters, id: \.id) { char in
                     NavigationLink {
-                        CharacterDetailView()
+                        CharacterDetailFactory.make(character: char)
                     } label: {
                         HomeViewListItem(
                             character: char

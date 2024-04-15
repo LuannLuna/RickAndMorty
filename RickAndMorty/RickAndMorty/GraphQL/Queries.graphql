@@ -13,30 +13,9 @@ query FetchAllCharacters($page:Int!) {
 
 query FetchCharacter($id: ID!) {
   character(id: $id) {
-         name
-    status
-    species
-    type
-    gender
-    origin {
-      name
-      dimension
-      type
-    }
-    location {
-      name
-      dimension
-      type
-    }
-    image
+    ...CharacterInfo
     episode {
-      id
-      name
-      air_date
       episode
-      characters {
-        ...CharacterInfo
-      }
     }
   }
 }
