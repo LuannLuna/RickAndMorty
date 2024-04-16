@@ -8,27 +8,26 @@
 import Foundation
 
 final class HomeViewViewModel: ObservableObject {
-    private let service: CharactersService
+    private let service: CharacterServiceProtocol
     
     @Published var characters: [CharacterViewModel] = []
-    @Published var isFinished: Bool = false
+    @Published var searchText: String = ""
+    @Published var searchResult: [SearchResult] = []
     
     private var nextPage: Int?
     
-    init(service: CharactersService) {
+    init(service: CharacterServiceProtocol) {
         self.service = service
     }
     
     func fetchAllCharacters() {
-        service.fetchAllCharacters(nextPage) { [weak self] result in
+        service.fetchAllCharacters(nextPage) { result in
             switch result {
             case let .success(response):
                 DispatchQueue.main.async { [weak self] in
                     guard let self else { return }
-                    
                     characters += response.characters.map(CharacterViewModel.init)
                     nextPage = response.nextPage
-                    isFinished = nextPage == nil ? true : false
                 }
             case let .failure(failure):
                 print(failure)
@@ -40,6 +39,19 @@ final class HomeViewViewModel: ObservableObject {
         let thresholdIndex = characters.index(characters.endIndex, offsetBy: -5)
         if characters.firstIndex(where: { $0.id == char.id }) == thresholdIndex {
             fetchAllCharacters()
+        }
+    }
+    
+    func findCharacters() {
+        service.findCharacter(name: searchText) { result in
+            switch result {
+            case let .success(response):
+                DispatchQueue.main.async { [weak self] in
+                    self?.searchResult = response
+                }
+            case let .failure(failure):
+                print(failure)
+            }
         }
     }
 }

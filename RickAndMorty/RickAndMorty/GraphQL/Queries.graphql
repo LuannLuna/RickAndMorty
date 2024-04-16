@@ -30,3 +30,14 @@ query FindCharacter($filter: FilterCharacter!) {
     }
   }
 }
+
+query FetchEpisode($filter: FilterEpisode!) {
+  episodes(filter: $filter) {
+    info {
+      ...PageInfo
+    }
+    results {
+      ...EpisodeInfo
+    }
+  }
+}

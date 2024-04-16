@@ -25,7 +25,7 @@ struct CharacterDetailViewModel {
     }
     
     var name: String {
-        characterDetail.fragments.characterInfo.name ?? "Unkown"
+        characterDetail.fragments.characterInfo.name.unwraped
     }
     
     var status: Status {
@@ -49,7 +49,7 @@ struct CharacterDetailViewModel {
     }
     
     var type: String {
-        characterDetail.fragments.characterInfo.type ?? "Unkown"
+        characterDetail.fragments.characterInfo.type.unwraped
     }
     
     var episode: [String] {
@@ -57,29 +57,29 @@ struct CharacterDetailViewModel {
     }
 }
 
-//struct EpisodeViewModel {
-//    private var _episode: FetchCharacterQuery.Data.Character.Episode
-//    
-//    init(episode: FetchCharacterQuery.Data.Character.Episode) {
-//        self._episode = episode
-//    }
-//    
-//    var name: String {
-//        _episode.name ?? "--"
-//    }
-//    
-//    var airDate: String? {
-//        _episode.airDate
-//    }
-//    
-//    var episode: String {
-//        _episode.episode ?? ""
-//    }
-//    
-//    var characters: [CharacterViewModel] {
-//        _episode.characters.compactMap {
-//            guard let char = $0?.fragments.characterInfo else { return nil }
-//            return CharacterViewModel(character: char)
-//        }
-//    }
-//}
+struct EpisodeViewModel {
+    private var _episode: EpisodeInfo
+    
+    init(episode: EpisodeInfo) {
+        self._episode = episode
+    }
+    
+    var name: String {
+        _episode.name.unwraped
+    }
+    
+    var airDate: String? {
+        _episode.airDate
+    }
+    
+    var episode: String {
+        _episode.episode.unwraped
+    }
+    
+    var characters: [CharacterViewModel] {
+        _episode.characters.compactMap {
+            guard let char = $0?.fragments.characterInfo else { return nil }
+            return CharacterViewModel(character: char)
+        }
+    }
+}

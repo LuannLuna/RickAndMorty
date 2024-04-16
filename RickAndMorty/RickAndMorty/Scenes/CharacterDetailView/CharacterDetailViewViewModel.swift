@@ -6,19 +6,20 @@
 //
 
 import Foundation
+import Apollo
 
 final class CharacterDetailViewViewModel: ObservableObject {
-    private var characterViewModel: CharacterViewModel
-    private let service: CharactersService
+    private var characterID: GraphQLID
+    private let service: ApolloService
     @Published var character: CharacterDetailViewModel?
 
-    init(characterViewModel: CharacterViewModel, service: CharactersService) {
-        self.characterViewModel = characterViewModel
+    init(characterID: GraphQLID, service: ApolloService) {
+        self.characterID = characterID
         self.service = service
     }
     
     func fetchDetail() {
-        service.fetchCharacterDetail(id: characterViewModel.id) { [weak self] result in
+        service.fetchCharacterDetail(id: characterID) { result in
             switch result {
             case let .success(response):
                 DispatchQueue.main.async { [weak self] in

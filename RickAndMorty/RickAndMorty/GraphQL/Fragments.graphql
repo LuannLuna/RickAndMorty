@@ -20,3 +20,13 @@ fragment CharacterInfo on Character {
   }
   image
 }
+
+fragment EpisodeInfo on Episode {
+  id
+  name
+  episode
+  air_date
+  characters {
+    ...CharacterInfo
+  }
+}

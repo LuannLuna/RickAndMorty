@@ -9,7 +9,7 @@ import Foundation
 
 enum HomeFactory {
     static func make() -> HomeView {
-        let service = CharactersService()
+        let service = ApolloService()
         let viewModel = HomeViewViewModel(service: service)
         return HomeView(viewModel: viewModel)
     }
