@@ -53,6 +53,7 @@ struct CharacterDetailView: View {
                                             .clipShape(Capsule())
                                     )
                             }
+                            .accessibilityIdentifier("episode-item")
                         }
                     }
                     
@@ -66,5 +67,6 @@ struct CharacterDetailView: View {
         }
         .padding(.horizontal)
         .navigationBarTitle("", displayMode: .inline)
+        .accessibilityIdentifier("detail-character-view")
     }
 }

@@ -10,10 +10,10 @@ import Apollo
 
 final class CharacterDetailViewViewModel: ObservableObject {
     private var characterID: GraphQLID
-    private let service: ApolloService
+    private let service: CharacterServiceProtocol
     @Published var character: CharacterDetailViewModel?
 
-    init(characterID: GraphQLID, service: ApolloService) {
+    init(characterID: GraphQLID, service: CharacterServiceProtocol) {
         self.characterID = characterID
         self.service = service
     }
@@ -24,7 +24,7 @@ final class CharacterDetailViewViewModel: ObservableObject {
             case let .success(response):
                 DispatchQueue.main.async { [weak self] in
                     guard let response else { return }
-                    self?.character = .init(characterDetail: response)
+                    self?.character = response
                 }
             case let .failure(failure):
                 print(failure)

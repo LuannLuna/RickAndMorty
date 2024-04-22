@@ -19,7 +19,7 @@ struct HomeView: View {
                     NavigationLink {
                         CharacterDetailFactory.make(characterID: char.id)
                     } label: {
-                        CharacterCard(character: char, shadowColor: 0)
+                        CharacterCard(character: char, shadowColor: 0, expandedVersion: false)
                             .onAppear {
                                 viewModel.loadMoreItemsIfNeed(currentChar: char)
                             }
@@ -45,6 +45,7 @@ struct HomeView: View {
 
                         }
                         .foregroundColor(.primary)
+                        .accessibilityIdentifier("result-search-item")
                     }
                 }
             }

@@ -11,11 +11,13 @@ struct CharacterCard: View {
     let character: CharacterViewModel
     var shadowColor: CGFloat = 5
     
+    var expandedVersion: Bool = true
+    
     var body: some View {
         Group {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
-                    URLImage(url: character.imageUrl, size: 100)
+                    URLImage(url: character.imageUrl, size: expandedVersion ? 100 : 50)
                         .clipShape(Circle())
                         .overlay(Circle().stroke(Color.gray, lineWidth: 2))
                         .accessibilityAddTraits(.isImage)
@@ -26,22 +28,29 @@ struct CharacterCard: View {
                             .font(.headline)
                             .foregroundColor(.primary)
                         StatusInlineComponent(status: character.status)
-                        Text("Gender: \(character.gender)")
+                        if expandedVersion {
+                            Text("Gender: \(character.gender)")
+                        }
                     }
                     Spacer()
                 }
-                Text("Origin: \(character.origin)")
-                Text("Location: \(character.lastLocation)")
+                if expandedVersion {
+                    Text("Origin: \(character.origin)")
+                    Text("Location: \(character.lastLocation)")
+                }
             }
             .accessibilityElement(children: .ignore)
         }
         .accessibilityLabel(
-            Text("Name: \(character.name), status: \(character.status.rawValue), gender: \(character.gender.rawValue). This caracthers was last seen in: \(character.lastLocation). The origin is: \(character.origin)")
+            expandedVersion ?
+                Text("Name: \(character.name), status: \(character.status.rawValue), gender: \(character.gender.rawValue). This caracthers was last seen in: \(character.lastLocation). The origin is: \(character.origin)")
+            :
+                Text("Name: \(character.name), status: \(character.status.rawValue)")
         )
         .accessibilityHint("Select to see more details")
         .accessibilityAddTraits(.isButton)
         .foregroundColor(.primary)
-        .padding()
+        .padding( expandedVersion ? 10 : 0 )
         .background(Color.white)
         .cornerRadius(10)
         .shadow(radius: shadowColor)

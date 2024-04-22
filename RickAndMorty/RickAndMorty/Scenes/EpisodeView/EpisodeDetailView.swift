@@ -14,18 +14,21 @@ struct EpisodeDetailView: View {
         ScrollView {
             if let episodeViewModel = viewModel.episodeViewModel {
                 VStack(alignment: .leading, spacing: 20) {
-                    Text("Name: \(episodeViewModel.name)")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .accessibilityLabel(
-                            Text("Episode named: \(episodeViewModel.name)")
-                        )
-                    
-                    Text("Air Date: \(episodeViewModel.airDate.unwraped)")
-                        .font(.title3)
-                        .accessibilityLabel(
-                            Text("It aired on \(episodeViewModel.airDate.unwraped)")
-                        )
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Name: \(episodeViewModel.name)")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .accessibilityLabel(
+                                Text("Episode named: \(episodeViewModel.name)")
+                            )
+                        
+                        Text("Air Date: \(episodeViewModel.airDate.unwraped)")
+                            .font(.title3)
+                            .accessibilityLabel(
+                                Text("It aired on \(episodeViewModel.airDate.unwraped)")
+                            )
+                    }
+                    .accessibilityElement(children: .combine)
                     
                     Text("Characters:")
                         .font(.headline)
@@ -36,10 +39,6 @@ struct EpisodeDetailView: View {
                             CharacterDetailFactory.make(characterID: character.id)
                         } label: {
                             CharacterCard(character: character)
-                                .accessibilityElement(children: .ignore)
-                                .accessibilityLabel(
-                                    Text("Name: \(character.name)")
-                                )
                         }
                     }
                 }
@@ -52,6 +51,7 @@ struct EpisodeDetailView: View {
         .onAppear {
             viewModel.fetchEpisodeDetail()
         }
+        .accessibilityIdentifier("episode-detail-view")
     }
 }
 

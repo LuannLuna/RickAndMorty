@@ -26,19 +26,24 @@ enum PagingState: Equatable {
 }
 
 protocol CharacterServiceProtocol {
-    func fetchAllCharacters(_ nextPage: Int?, completion: @escaping (Result<CharactersResponse, Error>) -> Void)
-    func fetchCharacterDetail(id: String, completion: @escaping (Result<CharacterDetail?, Error>) -> Void)
-    func findCharacter(name: String, completion: @escaping (Result<[SearchResult], Error>) -> Void)
+    func fetchAllCharacters(_ nextPage: Int?, completion: @escaping (Result<CharactersResponse, ApolloResponseError>) -> Void)
+    func fetchCharacterDetail(id: String, completion: @escaping (Result<CharacterDetailViewModel?, ApolloResponseError>) -> Void)
+    func findCharacter(name: String, completion: @escaping (Result<[SearchResult], ApolloResponseError>) -> Void)
 }
 
 extension CharacterServiceProtocol {
-    func fetchAllCharacters(completion: @escaping (Result<CharactersResponse, Error>) -> Void) {
+    func fetchAllCharacters(completion: @escaping (Result<CharactersResponse, ApolloResponseError>) -> Void) {
         fetchAllCharacters(nil, completion: completion)
     }
 }
 
 protocol EpisodeServiceProtocol {
-    func fetchEpisodeDetail(episode: String, completion: @escaping (Result<EpisodeInfo?, Error>) -> Void)
+    func fetchEpisodeDetail(episode: String, completion: @escaping (Result<EpisodeInfo?, ApolloResponseError>) -> Void)
+}
+
+enum ApolloResponseError: Error {
+    case notData
+    case generic(Error)
 }
 
 final class ApolloService {
@@ -51,7 +56,7 @@ final class ApolloService {
 }
 
 extension ApolloService: CharacterServiceProtocol {
-    func fetchAllCharacters(_ nextPage: Int?, completion: @escaping (Result<CharactersResponse, Error>) -> Void) {
+    func fetchAllCharacters(_ nextPage: Int?, completion: @escaping (Result<CharactersResponse, ApolloResponseError>) -> Void) {
         
         if pagingState == .loadingFirstPage || pagingState == .loadingNextPage {
             return
@@ -75,12 +80,12 @@ extension ApolloService: CharacterServiceProtocol {
                 completion(.success(response))
             case let .failure(error):
                 print(error.localizedDescription)
-                completion(.failure(error))
+                completion(.failure(.generic(error)))
             }
         }
     }
     
-    func findCharacter(name: String, completion: @escaping (Result<[SearchResult], Error>) -> Void) {
+    func findCharacter(name: String, completion: @escaping (Result<[SearchResult], ApolloResponseError>) -> Void) {
         apollo.fetch(
             query: FindCharacterQuery(
                 filter: FilterCharacter(
@@ -101,12 +106,12 @@ extension ApolloService: CharacterServiceProtocol {
                 completion(.success(result))
             case let .failure(error):
                 print(error.localizedDescription)
-                completion(.failure(error))
+                completion(.failure(.generic(error)))
             }
         }
     }
     
-    func fetchCharacterDetail(id: String, completion: @escaping (Result<CharacterDetail?, Error>) -> Void) {
+    func fetchCharacterDetail(id: String, completion: @escaping (Result<CharacterDetailViewModel?, ApolloResponseError>) -> Void) {
         apollo.fetch(
             query: FetchCharacterQuery(id: id),
             cachePolicy: .returnCacheDataAndFetch,
@@ -115,18 +120,20 @@ extension ApolloService: CharacterServiceProtocol {
         ) { result in
             switch result {
             case let .success(graphqlResponse):
-                let character = graphqlResponse.data?.character
-                completion(.success(character))
+                guard let character = graphqlResponse.data?.character else {
+                    return completion(.failure(.notData))
+                }
+                completion(.success(.init(characterDetail: character)))
             case let .failure(error):
                 print(error.localizedDescription)
-                completion(.failure(error))
+                completion(.failure(.generic(error)))
             }
         }
     }
 }
 
 extension ApolloService: EpisodeServiceProtocol {
-    func fetchEpisodeDetail(episode: String, completion: @escaping (Result<EpisodeInfo?, Error>) -> Void) {
+    func fetchEpisodeDetail(episode: String, completion: @escaping (Result<EpisodeInfo?, ApolloResponseError>) -> Void) {
         apollo.fetch(
             query: FetchEpisodeQuery(
                 filter: FilterEpisode(
@@ -143,7 +150,7 @@ extension ApolloService: EpisodeServiceProtocol {
                 completion(.success(episodes.first))
             case let .failure(error):
                 print(error)
-                completion(.failure(error))
+                completion(.failure(.generic(error)))
             }
         }
     }
